@@ -3,7 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-# Load and Cache Data
+# Cache Data Loading Function
 @st.cache
 def load_data(file_path):
     df = pd.read_csv(file_path)
@@ -11,22 +11,27 @@ def load_data(file_path):
     df.set_index('Timestamp', inplace=True)
     return df
 
+# Streamlit App
 st.title("Solar Farm Data Analysis")
-uploaded_file = st.file_uploader("Upload Dataset", type="csv")
 
-if uploaded_file:
-    df = load_data(uploaded_file)
-    st.write(df.head())
+# File Uploader
+file_path = "cleaned_data_1.csv"  # Local dataset
+df = load_data(file_path)
 
-    # Correlation Matrix
-    st.subheader("Correlation Matrix")
-    corr = df.corr()
-    fig, ax = plt.subplots()
-    sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax)
-    st.pyplot(fig)
+# Display Data
+st.write("### Dataset Preview")
+st.write(df.head())
 
-    # Time Series Plot
-    st.subheader("Solar Radiation Over Time")
-    fig, ax = plt.subplots(figsize=(10, 6))
-    df[['GHI', 'DNI', 'DHI']].plot(ax=ax)
-    st.pyplot(fig)
+# Correlation Matrix
+st.subheader("Correlation Matrix")
+corr = df.corr()
+fig_corr, ax_corr = plt.subplots()
+sns.heatmap(corr, annot=True, cmap="coolwarm", ax=ax_corr)
+st.pyplot(fig_corr)
+
+# Time Series Plot
+st.subheader("Solar Radiation Over Time")
+fig_ts, ax_ts = plt.subplots(figsize=(10, 6))
+df[['GHI', 'DNI', 'DHI']].plot(ax=ax_ts)
+st.pyplot(fig_ts)
+
